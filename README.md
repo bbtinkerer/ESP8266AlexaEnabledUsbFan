@@ -5,6 +5,8 @@ By bbtinkerer (<http://bb-tinkerer.blogspot.com/>)
 ## Description
 Simple Alexa on/off switch with automatic off after configurable amount of time.
 
+Instructables project at http://www.instructables.com/id/Amazon-Alexa-Enabled-USB-Fan/
+
 ## Dependencies
 ESP8266 Arduino libraries.
 fauxoESP found at https://bitbucket.org/xoseperez/fauxmoesp.git. Be sure to dowload the dependencies for fauxmoESP too.
