@@ -29,12 +29,13 @@
 #define DEVICE_NAME "Daddy's fan" // name used for Alexa command. "Alexa, turn Daddy's fan on"
 
 #define FAN_GPIO 4
-#define FAN_ON_DURATION 2700000 // 45mins = 2700000ms. Limit is 72minutes before counter rolls over. If you want more, you'll need to add a second counter to count up how many 72minutes have elapsed sort of thing.
+#define FAN_ON_DURATION 3600000 // 45mins = 2700000ms; 1hr = 3600000ms; 2hrs = 7200000ms
 
 fauxmoESP fauxmo;
 bool fanOn;
 unsigned long startTime;
 int unusedGPIO[] = {5, 12, 13, 14, 16}; // 0 & 2 has external pull up and 15 has an external pull down on the Wemos D1 Mini
+unsigned long timeLeft;
 
 void setup() {
   DEBUG_UTIL_BEGIN;
@@ -89,6 +90,7 @@ void setup() {
       fanOn = state;
       if(fanOn){
         startTime = millis();
+        timeLeft = FAN_ON_DURATION;
       }
   });
 }
@@ -102,9 +104,14 @@ void loop() {
   // packets
   fauxmo.handle();
 
-  if (fanOn && millis() - startTime > FAN_ON_DURATION) {
+  if(fanOn){
+    unsigned long currentTime = millis();
+    timeLeft -= currentTime - startTime;
+    startTime = currentTime;
+    if(timeLeft <= 0){
       fanOn = false;
       digitalWrite(FAN_GPIO, LOW);
       DEBUG_UTIL_PRINTF("%d milliseconds elapsed, turning fan off", FAN_ON_DURATION);
+    }
   }
 }
